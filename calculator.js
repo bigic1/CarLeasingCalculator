@@ -4,6 +4,7 @@ export class Calculator
     {
         this.host = host;
         this.cars = [];
+
     }
     draw()
     {
@@ -14,7 +15,7 @@ export class Calculator
         const topdiv = document.createElement("div");
         div1.appendChild(topdiv);
 
-        const title = document.createElement("h1");
+        const title = document.createElement("h2");
         title.textContent = "Car Leasing Calculator";
         topdiv.appendChild(title);
 
@@ -34,6 +35,7 @@ export class Calculator
         cleft.appendChild(typelbl);
 
         const typebox = document.createElement("select");
+        typebox.className = "typebox";
         cleft.appendChild(typebox);
 
         this.cars.forEach(car => {
@@ -52,9 +54,12 @@ export class Calculator
         cleft.appendChild(valuelbl);
 
         const valuebox = document.createElement("input");
+        valuebox.value = 100000;
         cleft.appendChild(valuebox);
 
         valuebox.onchange=()=>{
+            if (valuebox.value < 10000) valuebox.value = 10000;
+            if (valuebox.value > 200000) valuebox.value = 200000;
             valuerange.value = valuebox.value;
             updatevalues();
         }
@@ -63,6 +68,7 @@ export class Calculator
         valuerange.type = "range";
         valuerange.min = 10000;
         valuerange.max = 200000;
+        valuerange.value = 100000;
         cleft.appendChild(valuerange);
 
         valuerange.onchange=()=>{
@@ -75,9 +81,13 @@ export class Calculator
         cright.appendChild(leaselbl);
 
         const leasebox = document.createElement("input");
+        leasebox.value = 36;
         cright.appendChild(leasebox);
 
         leasebox.onchange=()=>{
+            if (leasebox.value < 12) leasebox.value = 12;
+            if (leasebox.value > 60) leasebox.value = 60;
+            leasebox.value = Math.round(leasebox.value / 12) * 12;
             leaserange.value = leasebox.value;
             updatevalues();
         }
@@ -87,6 +97,7 @@ export class Calculator
         leaserange.min = 12;
         leaserange.max = 60;
         leaserange.step = 12;
+        leaserange.value = 36;
         cright.appendChild(leaserange);
 
         leaserange.onchange=()=>{
@@ -103,6 +114,7 @@ export class Calculator
         downrange.min = 10;
         downrange.max = 50;
         downrange.step = 5;
+        downrange.value = 20;
         cright.appendChild(downrange);
 
         downrange.onchange=()=>{
@@ -112,7 +124,7 @@ export class Calculator
         const bottomdiv = document.createElement("div");
         div1.appendChild(bottomdiv);
 
-        const detailslbl = document.createElement("h2");
+        const detailslbl = document.createElement("h3");
         detailslbl.textContent = "Leasing Details";
         bottomdiv.appendChild(detailslbl);
 
@@ -123,35 +135,41 @@ export class Calculator
         const bottomleft = document.createElement("div");
         const bottomright = document.createElement("div");
         bottomleft.className = "bottomleft";
-        bottomleft.className = "bottomright";
+        bottomright.className = "bottomright";
         bottom2.appendChild(bottomleft);
         bottom2.appendChild(bottomright);
 
         const bleftlbl = document.createElement("p");
-        bleftlbl.textContent = "Total Leasing Cost: €";
         bottomleft.appendChild(bleftlbl);
 
         const bleftlbl2 = document.createElement("p");
-        bleftlbl2.textContent = "Down Payment: €" + (valuebox.value * downrange.value / 100) + " (" + downrange.value + "%)";
         bottomleft.appendChild(bleftlbl2);
 
-
-
         const brightlbl = document.createElement("p");
-        brightlbl.textContent = "Monthly Installment: €";
+        const monthlyl = valuerange.value * ((downrange.value / 100)+((100-downrange.value)/1000 * (10+typebox.value)/10));
         bottomright.appendChild(brightlbl);
 
         const brightlbl2 = document.createElement("p");
         brightlbl2.className = "brightlbl2";
-        brightlbl2.textContent = "Interest Rate: " + typebox.value + "%";
         bottomright.appendChild(brightlbl2);
+
+        updatevalues();
 
 
         
         function updatevalues()
         {
-            bleftlbl2.textContent = "Down Payment: €" + (valuebox.value * downrange.value / 100) + " (" + downrange.value + "%)";
-            brightlbl2.textContent = "Interest Rate: " + typebox.value;
+            const months = leasebox.value;
+            const interestm = typebox.value / (12*100);
+            const principal = valuebox.value * (100 - downrange.value) / 100;
+            const plusinterest = Math.pow((1 + interestm), months);
+            const monthlyl = (principal * interestm * plusinterest) / (plusinterest - 1);
+            brightlbl.textContent = "Monthly Installment: €" + monthlyl.toFixed(2);
+            let downp = valuebox.value * downrange.value / 100;
+            let leasingcost = (monthlyl * months) + downp;
+            bleftlbl.textContent = "Total Leasing Cost: €" + leasingcost.toFixed(2);
+            bleftlbl2.textContent = "Down Payment: €" + downp.toFixed(2) + " (" + downrange.value + "%)";
+            brightlbl2.textContent = "Interest Rate: " + typebox.value + "%";
         }
 
     }

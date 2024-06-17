@@ -1,40 +1,64 @@
 *
 {
     font-family: Arial, Helvetica, sans-serif;
-    
 }
 
 .div1
 {
-    margin: auto;
-    border: 2px solid lightgray;
+    margin: auto; /*central horizontal alignment*/
+    border: 1px solid lightgray;
     border-radius: 5px;
-    background-color: white;
-    max-width: 600px;
+    max-width:600px;
     box-shadow: 0px 0px 20px 10px lightgrey;
+    padding: 20px;
 }
 
-.cleft, .cright
+.cleft, .cright, .bottomright, .bottomleft
 {
     display: flex;
     flex-direction: column;
-    width:50%;
+    width: 50%;
+    padding: 20px;
 }
 
 .middiv, .bottom2
 {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
 }
 
-.bottomleft, .bottomright
+.middiv
 {
-    width:50%;
+    border-bottom: 1px solid gray;
 }
 
+.bottomleft
+{
+    border-right: 1px solid black;
+}
 
-h1, h2
+h2, h3
 {
     text-align: center;
 }
+
+.typebox
+{
+    height: 20pt;
+}
+input
+{
+    height: 16pt;
+}
+
+@media screen and (max-width: 600px) {
+    .middiv, .bottom2
+    {
+        display: flex;
+        flex-direction: column;
+    }
+    .cleft, .cright, .bottomright, .bottomleft
+    {
+        width: 80%;
+        border: 0px;
+    }
+  }
