@@ -1,4 +1,4 @@
-#Car Leasing Calculator
+# Car Leasing Calculator
 
 This is a web application using HTML, CSS and JavaScript (JavaScript HTML DOM) that calculates the costs of car leasing.
 The application includes the following components:
